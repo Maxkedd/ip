@@ -1,4 +1,4 @@
-# Duke User Guide
+# CLANKER User Guide
 
 // Update the title above to match the actual product name
 
