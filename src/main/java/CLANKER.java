@@ -2,9 +2,14 @@ import java.util.Scanner;
 
 public class CLANKER {
     public static void main(String[] args) {
-        String seperator = "─".repeat(60);
+        // Read Input
         String line;
         Scanner in = new Scanner(System.in);
+
+        // Constants
+        String[] storeInput = new String[100];
+        int storeIdx = 0;
+        String seperator = "─".repeat(60);
         String banner = """
                 .:...:;;;;;;;:::;;;;....:;;+xx++++;;:..............::::::.........................................::.....
                 :::::::;;;;+;::::;::;x$$XXXXxx++;;::...   .   ......:::::.........................................::::...
@@ -69,21 +74,32 @@ What shall I help you with today (^;?
 """;
         String goodbye = "Bye! See you soon";
 
-        //Greet User
+        // Greet User
         System.out.println(seperator);
         System.out.println(banner);
         System.out.println(greeting);
         System.out.println(seperator);
 
-        //Echo user
+        // Echo user
         String UserInput = in.nextLine();
-        while(!UserInput.trim().equalsIgnoreCase("bye")) {
-            System.out.println(UserInput);
+        while(true) {
+            if(UserInput.trim().equalsIgnoreCase("bye")) {
+                System.out.println(goodbye);
+                break;
+            }
+
+            System.out.println(seperator);
+            if(UserInput.trim().equalsIgnoreCase("list")) {
+                for(int i = 0; i < storeIdx; i++) {
+                    System.out.printf("%d. %s\n", i+1, storeInput[i]);
+                }
+            }
+            else {
+                System.out.println("added: " + UserInput);
+                storeInput[storeIdx++] = UserInput;
+            }
             System.out.println(seperator);
             UserInput = in.nextLine();
         }
-
-        //Bye
-        System.out.println(goodbye);
     }
 }
