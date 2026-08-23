@@ -1,6 +1,10 @@
+import java.util.Scanner;
+
 public class CLANKER {
     public static void main(String[] args) {
         String seperator = "─".repeat(60);
+        String line;
+        Scanner in = new Scanner(System.in);
         String banner = """
                 .:...:;;;;;;;:::;;;;....:;;+xx++++;;:..............::::::.........................................::.....
                 :::::::;;;;+;::::;::;x$$XXXXxx++;;::...   .   ......:::::.........................................::::...
@@ -63,12 +67,23 @@ public class CLANKER {
 I'm CLANKER.
 What shall I help you with today (^;?
 """;
-        String goodbye = "Good bye..";
+        String goodbye = "Bye! See you soon";
 
+        //Greet User
         System.out.println(seperator);
         System.out.println(banner);
         System.out.println(greeting);
         System.out.println(seperator);
+
+        //Echo user
+        String UserInput = in.nextLine();
+        while(!UserInput.trim().equalsIgnoreCase("bye")) {
+            System.out.println(UserInput);
+            System.out.println(seperator);
+            UserInput = in.nextLine();
+        }
+
+        //Bye
         System.out.println(goodbye);
     }
 }
