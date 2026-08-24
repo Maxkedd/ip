@@ -7,8 +7,8 @@ public class CLANKER {
         Scanner in = new Scanner(System.in);
 
         // Constants
-        String[] storeInput = new String[100];
-        int storeIdx = 0;
+        Task[] Tasks = new Task[101];
+        int numTasks = 1;
         String seperator = "─".repeat(60);
         String banner = """
                 .:...:;;;;;;;:::;;;;....:;;+xx++++;;:..............::::::.........................................::.....
@@ -80,26 +80,60 @@ What shall I help you with today (^;?
         System.out.println(greeting);
         System.out.println(seperator);
 
-        // Echo user
-        String UserInput = in.nextLine();
+        // userInput
+        String userInput = in.nextLine();
         while(true) {
-            if(UserInput.trim().equalsIgnoreCase("bye")) {
-                System.out.println(goodbye);
-                break;
+            if(userInput.trim().isEmpty()) {
+                userInput = in.nextLine();
+                continue;
+            }
+
+            String[] splitInput = userInput.split(" ");
+            String command = splitInput[0].toLowerCase();
+            System.out.println(seperator);
+
+            switch (command) {
+                case "bye":
+                    System.out.println(goodbye);
+                    return;
+                case "list":
+                    System.out.println("Here is your list: ");
+                    for(int i = 1; i < numTasks; i++) {
+                        System.out.printf("%d.[%s] %s\n", i, Tasks[i].getStatusIcon(), Tasks[i].getDescription());
+                    }
+                    break;
+                case "mark", "unmark":
+                    int target;
+                    try {
+                        target = Integer.parseInt(splitInput[1]);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Error: 'mark' requires a valid number!");
+                        break;
+                    }
+                    if(target <= 0 || target >= numTasks) {
+                        System.out.println("Error: out of bounds!");
+                        break;
+                    }
+                    if(command.equals("mark")) {
+                        System.out.println("OK! Marked as done: ");
+                        System.out.println("  [X] " + Tasks[target].getDescription());
+                        Tasks[target].setDone(true);
+                    }
+                    else {
+                        System.out.println("OK! Marked as not done: " + target);
+                        System.out.println("  [ ] " + Tasks[target].getDescription());
+                        Tasks[target].setDone(false);
+                    }
+                    break;
+                default:
+                    System.out.println("added: " + userInput);
+                    Tasks[numTasks] = new Task(userInput);
+                    Tasks[numTasks++].setDone(false);
+                    break;
             }
 
             System.out.println(seperator);
-            if(UserInput.trim().equalsIgnoreCase("list")) {
-                for(int i = 0; i < storeIdx; i++) {
-                    System.out.printf("%d. %s\n", i+1, storeInput[i]);
-                }
-            }
-            else {
-                System.out.println("added: " + UserInput);
-                storeInput[storeIdx++] = UserInput;
-            }
-            System.out.println(seperator);
-            UserInput = in.nextLine();
+            userInput = in.nextLine();
         }
     }
 }
