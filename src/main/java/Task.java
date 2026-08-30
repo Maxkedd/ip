@@ -15,7 +15,7 @@ public class Task {
         return description;
     }
 
-    public void setDone(Boolean done) {
-        isDone = done;
+    public void setDone(Boolean isDone) {
+        this.isDone = isDone;
     }
 }
