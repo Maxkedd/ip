@@ -1,4 +1,6 @@
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CLANKER {
     public static void main(String[] args) {
@@ -7,9 +9,8 @@ public class CLANKER {
         Scanner in = new Scanner(System.in);
 
         // Constants
-        Task[] tasks = new Task[101];
-        int numTasks = 1;
-        String SEPARATOR_LINE = "─".repeat(60);
+        List<ToDo> tasks = new ArrayList<>();
+        String LINE_BREAK = "─".repeat(60);
         String BANNER = """
         .:...:;;;;;;;:::;;;;....:;;+xx++++;;:..............::::::.........................................::.....
         :::::::;;;;+;::::;::;x$$XXXXxx++;;::...   .   ......:::::.........................................::::...
@@ -68,17 +69,17 @@ public class CLANKER {
         .x$XX$$$XXXxx+;;;....                           .+xx++++;+;;;;++;+x;..                                  \s
         .;XX$$$$XXXXxx+;;....  .                             ..;: .:.;:... .:;+;:..                             \s
         """;
-        String greeting = """
+        String GREETING = """
         I'm CLANKER.
         What shall I help you with today (^;?
         """;
-        String goodbye = "Bye! See you soon";
+        String GOODBYE = "Bye! See you soon";
 
         // Greet User
-        System.out.println(SEPARATOR_LINE);
+        System.out.println(LINE_BREAK);
         System.out.println(BANNER);
-        System.out.println(greeting);
-        System.out.println(SEPARATOR_LINE);
+        System.out.println(GREETING);
+        System.out.println(LINE_BREAK);
 
         // userInput
         String userInput = in.nextLine();
@@ -88,53 +89,104 @@ public class CLANKER {
                 continue;
             }
 
-            String[] splitInput = userInput.split(" ");
-            String command = splitInput[0].toLowerCase();
-            System.out.println(SEPARATOR_LINE);
+            String[] splitInput = userInput.split(" ", 2);
+            String command = splitInput[0].toLowerCase().trim();
+            String taskToAdd;
+            System.out.println(LINE_BREAK);
+
+            // Reusable temp variables
+            ToDo tempToDo;
+            String task;
+            String from;
+            String by;
 
             switch (command) {
             case "bye":
-                System.out.println(goodbye);
+                System.out.println(GOODBYE);
                 return;
+                
             case "list":
+                if(tasks.size() <= 0) {
+                    System.out.println("Add tasks first");
+                    break;
+                }
+
                 System.out.println("Here is your list: ");
-                for (int i = 1; i < numTasks; i++) {
-                    System.out.printf("%d.[%s] %s\n", i, tasks[i].getStatusIcon(), tasks[i].getDescription());
+                for (int i = 0; i < tasks.size(); i++) {
+                    tempToDo = tasks.get(i);
+                    System.out.printf("%d. ", i + 1);
+                    tempToDo.printResponse();
                 }
                 break;
+
             case "mark", "unmark":
                 int target;
-                
                 try {
-                    target = Integer.parseInt(splitInput[1]);
+                    target = Integer.parseInt(splitInput[1]) - 1;
                 } catch (NumberFormatException e) {
                     System.out.println("Error: 'mark' requires a valid number!");
                     break;
                 }
 
-                if (target <= 0 || target >= numTasks) {
+                if (target < 0 || target >= tasks.size()) {
                     System.out.println("Error: out of bounds!");
                     break;
                 }
 
                 if (command.equals("mark")) {
                     System.out.println("OK! Marked as done: ");
-                    System.out.println("  [X] " + tasks[target].getDescription());
-                    tasks[target].setDone(true);
+                    tasks.get(target).setDone(true);
                 } else {
                     System.out.println("OK! Marked as not done: " + target);
-                    System.out.println("  [ ] " + tasks[target].getDescription());
-                    tasks[target].setDone(false);
+                    tasks.get(target).setDone(false);
                 }
+
+                tempToDo = tasks.get(target);
+                System.out.printf("[%s][%s] %s\n", tempToDo.getTaskIcon(), tempToDo.getStatusIcon(), tempToDo.getDescription());
                 break;
+
+            case "todo", "deadline", "event":
+                taskToAdd = splitInput[1].toLowerCase().trim();
+                switch (command) {
+                case "todo":
+                    tasks.add(new ToDo(taskToAdd));
+                    break;
+
+                case "deadline":
+                    int idxBy = taskToAdd.indexOf("/");
+                    if(idxBy == -1) {
+                        System.out.println("Error! Try this format: deadline task /by date");
+                        break;
+                    }
+                    task = taskToAdd.substring(0, idxBy);
+                    by = taskToAdd.substring(idxBy + 1);
+                    tasks.add(new Deadline(task, by));
+                    break;
+
+                case "event":
+                    String[] segments = taskToAdd.split("/", 3);
+                    if(segments.length != 3) {
+                        System.out.println("Error! Try this format: event task /from date /to date");
+                    }
+                    task = segments[0].trim();
+                    from = segments[1].trim();
+                    by = segments[2].trim();
+                    tasks.add(new Event(task, from, by));
+                    break;
+                }
+                tempToDo = tasks.getLast();
+                tempToDo.setDone(false);
+                System.out.println("Task added: ");
+                tempToDo.printResponse();
+                System.out.printf("You have %d tasks added to list\n", tasks.size());
+                break;
+
             default:
-                System.out.println("added: " + userInput);
-                tasks[numTasks] = new Task(userInput);
-                tasks[numTasks++].setDone(false);
+                System.out.println("Command Invalid!");
                 break;
             }
 
-            System.out.println(SEPARATOR_LINE);
+            System.out.println(LINE_BREAK);
             userInput = in.nextLine();
         }
     }
