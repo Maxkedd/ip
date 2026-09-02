@@ -5,7 +5,6 @@ import java.util.List;
 public class CLANKER {
     public static void main(String[] args) {
         // Read Input
-        String line;
         Scanner in = new Scanner(System.in);
 
         // Constants
@@ -89,105 +88,122 @@ public class CLANKER {
                 continue;
             }
 
-            String[] splitInput = userInput.split(" ", 2);
-            String command = splitInput[0].toLowerCase().trim();
-            String taskToAdd;
-            System.out.println(LINE_BREAK);
-
-            // Reusable temp variables
-            ToDo tempToDo;
-            String task;
-            String from;
-            String by;
-
-            switch (command) {
-            case "bye":
-                System.out.println(GOODBYE);
+            if (processCommand(userInput, tasks, LINE_BREAK, GOODBYE)) {
                 return;
-                
-            case "list":
-                if(tasks.size() <= 0) {
-                    System.out.println("Add tasks first");
-                    break;
-                }
+            }
+            userInput = in.nextLine();
+        }
+    }
 
-                System.out.println("Here is your list: ");
-                for (int i = 0; i < tasks.size(); i++) {
-                    tempToDo = tasks.get(i);
-                    System.out.printf("%d. ", i + 1);
-                    tempToDo.printResponse();
-                }
-                break;
+    /**
+     * Processes one non-empty command and applies its changes to the task list.
+     *
+     * @param userInput command entered by the user
+     * @param tasks task list to read or update
+     * @param lineBreak separator printed around command output
+     * @param goodbye message printed when the user exits
+     * @return true when the command asks the application to exit
+     */
+    private static boolean processCommand(String userInput, List<ToDo> tasks,
+                                          String lineBreak, String goodbye) {
+        String[] splitInput = userInput.split(" ", 2);
+        String command = splitInput[0].toLowerCase().trim();
+        String taskToAdd;
+        System.out.println(lineBreak);
 
-            case "mark", "unmark":
-                int target;
-                try {
-                    target = Integer.parseInt(splitInput[1]) - 1;
-                } catch (NumberFormatException e) {
-                    System.out.println("Error: 'mark' requires a valid number!");
-                    break;
-                }
+        // Reusable temp variables
+        ToDo tempToDo;
+        String task;
+        String from;
+        String by;
 
-                if (target < 0 || target >= tasks.size()) {
-                    System.out.println("Error: out of bounds!");
-                    break;
-                }
+        switch (command) {
+        case "bye":
+            System.out.println(goodbye);
+            return true;
 
-                if (command.equals("mark")) {
-                    System.out.println("OK! Marked as done: ");
-                    tasks.get(target).setDone(true);
-                } else {
-                    System.out.println("OK! Marked as not done: " + target);
-                    tasks.get(target).setDone(false);
-                }
-
-                tempToDo = tasks.get(target);
-                System.out.printf("[%s][%s] %s\n", tempToDo.getTaskIcon(), tempToDo.getStatusIcon(), tempToDo.getDescription());
-                break;
-
-            case "todo", "deadline", "event":
-                taskToAdd = splitInput[1].toLowerCase().trim();
-                switch (command) {
-                case "todo":
-                    tasks.add(new ToDo(taskToAdd));
-                    break;
-
-                case "deadline":
-                    int idxBy = taskToAdd.indexOf("/");
-                    if(idxBy == -1) {
-                        System.out.println("Error! Try this format: deadline task /by date");
-                        break;
-                    }
-                    task = taskToAdd.substring(0, idxBy);
-                    by = taskToAdd.substring(idxBy + 1);
-                    tasks.add(new Deadline(task, by));
-                    break;
-
-                case "event":
-                    String[] segments = taskToAdd.split("/", 3);
-                    if(segments.length != 3) {
-                        System.out.println("Error! Try this format: event task /from date /to date");
-                    }
-                    task = segments[0].trim();
-                    from = segments[1].trim();
-                    by = segments[2].trim();
-                    tasks.add(new Event(task, from, by));
-                    break;
-                }
-                tempToDo = tasks.getLast();
-                tempToDo.setDone(false);
-                System.out.println("Task added: ");
-                tempToDo.printResponse();
-                System.out.printf("You have %d tasks added to list\n", tasks.size());
-                break;
-
-            default:
-                System.out.println("Command Invalid!");
+        case "list":
+            if(tasks.size() <= 0) {
+                System.out.println("Add tasks first");
                 break;
             }
 
-            System.out.println(LINE_BREAK);
-            userInput = in.nextLine();
+            System.out.println("Here is your list: ");
+            for (int i = 0; i < tasks.size(); i++) {
+                tempToDo = tasks.get(i);
+                System.out.printf("%d. ", i + 1);
+                tempToDo.printResponse();
+            }
+            break;
+
+        case "mark", "unmark":
+            int target;
+            try {
+                target = Integer.parseInt(splitInput[1]) - 1;
+            } catch (NumberFormatException e) {
+                System.out.println("Error: 'mark' requires a valid number!");
+                break;
+            }
+
+            if (target < 0 || target >= tasks.size()) {
+                System.out.println("Error: out of bounds!");
+                break;
+            }
+
+            if (command.equals("mark")) {
+                System.out.println("OK! Marked as done: ");
+                tasks.get(target).setDone(true);
+            } else {
+                System.out.println("OK! Marked as not done: " + target);
+                tasks.get(target).setDone(false);
+            }
+
+            tempToDo = tasks.get(target);
+            System.out.printf("[%s][%s] %s\n", tempToDo.getTaskIcon(), tempToDo.getStatusIcon(), tempToDo.getDescription());
+            break;
+
+        case "todo", "deadline", "event":
+            taskToAdd = splitInput[1].toLowerCase().trim();
+            switch (command) {
+            case "todo":
+                tasks.add(new ToDo(taskToAdd));
+                break;
+
+            case "deadline":
+                int idxBy = taskToAdd.indexOf("/");
+                if(idxBy == -1) {
+                    System.out.println("Error! Try this format: deadline task /by date");
+                    break;
+                }
+                task = taskToAdd.substring(0, idxBy);
+                by = taskToAdd.substring(idxBy + 1);
+                tasks.add(new Deadline(task, by));
+                break;
+
+            case "event":
+                String[] segments = taskToAdd.split("/", 3);
+                if(segments.length != 3) {
+                    System.out.println("Error! Try this format: event task /from date /to date");
+                }
+                task = segments[0].trim();
+                from = segments[1].trim();
+                by = segments[2].trim();
+                tasks.add(new Event(task, from, by));
+                break;
+            }
+            tempToDo = tasks.getLast();
+            tempToDo.setDone(false);
+            System.out.println("Task added: ");
+            tempToDo.printResponse();
+            System.out.printf("You have %d tasks added to list\n", tasks.size());
+            break;
+
+        default:
+            System.out.println("Command Invalid!");
+            break;
         }
+
+        System.out.println(lineBreak);
+        return false;
     }
 }
