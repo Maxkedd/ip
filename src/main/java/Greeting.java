@@ -69,6 +69,7 @@ public class Greeting {
         System.out.println(LINE_BREAK);
         System.out.println(BANNER);
         System.out.println(GREETING);
+        System.out.println(HelpText.COMMAND_LIST);
         System.out.println(LINE_BREAK);
     }
 }

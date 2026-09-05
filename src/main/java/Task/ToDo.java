@@ -1,5 +1,7 @@
+package Task;
+
 public class ToDo extends Task {
-    protected Boolean isDone;
+    protected boolean isDone;
 
     public ToDo(String description) {
         super(description);

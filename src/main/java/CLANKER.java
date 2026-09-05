@@ -1,7 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Scanner;
+
+import Task.ToDo;
 
 public class CLANKER {
 
@@ -10,23 +11,21 @@ public class CLANKER {
         List<ToDo> tasks = new ArrayList<>();
         Greeting greeting = new Greeting();
         Command command = new Command(tasks);
-        Scanner in = new Scanner(System.in);
 
-        // Greet
-        greeting.greetUser();
+        try (Scanner in = new Scanner(System.in)) {
+            greeting.greetUser();
 
-        // userInput
-        String userInput = in.nextLine();
-        while (true) {
-            if (userInput.trim().isEmpty()) {
-                userInput = in.nextLine();
-                continue;
+            while (in.hasNextLine()) {
+                String userInput = in.nextLine();
+
+                if (userInput.isBlank()) {
+                    continue;
+                }
+
+                if (command.processCommand(userInput)) {
+                    break;
+                }
             }
-
-            if (command.processCommand(userInput)) {
-                return;
-            }
-            userInput = in.nextLine();
         }
     }
 }
