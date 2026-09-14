@@ -1,35 +1,40 @@
-import java.util.List;
-
+import java.util.ArrayList;
 import Task.Deadline;
 import Task.Event;
 import Task.ToDo;
 
 public class Command {
 
-    private final List<ToDo> tasks;
+    private final ArrayList<ToDo> tasks;
 
     // Constants
     private static final String GOODBYE = "Bye! See you soon";
     private static final String LINE_BREAK = "─".repeat(60);
 
-    public Command(List<ToDo> tasks) {
+    // Reusable temp variables
+    ToDo tempToDo;
+    String task;
+    String start;
+    String due;
+    String end;
+    String taskToAdd;
+
+    public Command(ArrayList<ToDo> tasks) {
         this.tasks = tasks;
     }
+
+    private String[] separateInput(String input) {
+        String cleanedInput = input.strip();
+        return cleanedInput.split("\\s+");
+    }
+
+
     public boolean processCommand(String userInput) {
         try {
-            String cleanedInput = userInput.strip();
-            String[] splitInput = cleanedInput.split("\\s+", 2);
-            String originalCommand = splitInput[0];
-            String command = splitInput[0].toLowerCase().trim();
-            String taskToAdd;
+            String[] separatedInput = separateInput(userInput);
+            String command = separatedInput[0].toLowerCase().trim();
+            String originalCommand = separatedInput[0];
             System.out.println(LINE_BREAK);
-
-            // Reusable temp variables
-            ToDo tempToDo;
-            String task;
-            String start;
-            String due;
-            String end;
 
             switch (command) {
             case "bye":
@@ -54,13 +59,13 @@ public class Command {
                 }
                 break;
 
-            case "mark", "unmark":
-                if (splitInput.length != 2) {
+            case "mark", "unmark", "delete":
+                if (separatedInput.length != 2) {
                     throw new InvalidCommandException("Please provide a task number!");
                 }
                 int target;
                 try {
-                    target = Integer.parseInt(splitInput[1].trim());
+                    target = Integer.parseInt(separatedInput[1].trim());
                 } catch (NumberFormatException e) {
                     throw new InvalidCommandException("Error: 'mark' requires a valid number!");
                 }
@@ -73,21 +78,28 @@ public class Command {
                 if (command.equals("mark")) {
                     System.out.println("OK! Marked as done: ");
                     tasks.get(target - 1).setDone(true);
-                } else {
+                } else if(command.equals("unmark")) {
                     System.out.println("OK! Marked as not done: " + target);
                     tasks.get(target - 1).setDone(false);
+                } else {
+                    System.out.println("OK! deleted task: " + target);
                 }
 
                 tempToDo = tasks.get(target - 1);
                 System.out.printf("[%s][%s] %s\n", tempToDo.getTaskIcon(),
                         tempToDo.getStatusIcon(), tempToDo.getDescription());
+
+                if(command.equals("delete")) {
+                    tasks.remove(target - 1);
+                }
+
                 break;
 
             case "todo", "deadline", "event":
-                if (splitInput.length < 2 || splitInput[1].trim().isEmpty()) {
+                if (separatedInput.length < 2 || separatedInput[1].trim().isEmpty()) {
                     throw new InvalidCommandException("Error! Please use the right format!");
                 }
-                taskToAdd = splitInput[1].trim();
+                taskToAdd = separatedInput[1].trim();
                 switch (command) {
                 case "todo":
                     tasks.add(new ToDo(taskToAdd));
