@@ -20,6 +20,11 @@ public class ToDo extends Task {
         this.isDone = isDone;
     }
 
+    /** Returns the task type, completion flag, and description for storage. */
+    public String toFileString() {
+        return getTaskIcon() + " | " + (isDone ? "1" : "0") + " | " + description;
+    }
+
     public void printResponse() {
         System.out.printf("  [%s][%s]%s\n", this.getTaskIcon(), this.getStatusIcon(), this.description);
     }
