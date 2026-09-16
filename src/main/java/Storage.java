@@ -1,3 +1,4 @@
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -6,11 +7,19 @@ import java.util.List;
 
 import Task.ToDo;
 
-/** Writes the current task list to a text file relative to the working directory. */
 public class Storage {
     private static final Path FILE_PATH = Path.of("data", "Clanker.txt");
 
-    /** Replaces the saved list so status changes do not leave outdated entries. */
+    public void printFileContents() throws IOException {
+        if (!Files.exists(FILE_PATH)) {
+            return;
+        }
+
+        for (String line : Files.readAllLines(FILE_PATH)) {
+            System.out.println(line);
+        }
+    }
+
     public void save(List<ToDo> tasks) throws IOException {
         Files.createDirectories(FILE_PATH.getParent());
         List<String> lines = new ArrayList<>();
