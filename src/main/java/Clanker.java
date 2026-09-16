@@ -1,14 +1,13 @@
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 import Task.ToDo;
 
-public class CLANKER {
+public class Clanker {
 
     public static void main(String[] args) {
         // Init
-        List<ToDo> tasks = new ArrayList<>();
+        ArrayList<ToDo> tasks = new ArrayList<>();
         Greeting greeting = new Greeting();
         Command command = new Command(tasks);
 

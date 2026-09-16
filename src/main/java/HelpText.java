@@ -8,6 +8,7 @@ public final class HelpText {
             list (list all tasks added)
             mark 'N' (mark task N as done)
             unmark 'N' (mark task N as not done)
+            delete 'N' (delete task N from list)
             """;
     private HelpText() {}
 }
