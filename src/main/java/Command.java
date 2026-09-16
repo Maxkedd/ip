@@ -87,7 +87,6 @@ public class Command {
                     System.out.println("OK! deleted task: " + target);
                 }
 
-                storage.save(tasks);
                 tempToDo = tasks.get(target - 1);
                 System.out.printf("[%s][%s] %s\n", tempToDo.getTaskIcon(),
                         tempToDo.getStatusIcon(), tempToDo.getDescription());
@@ -96,6 +95,7 @@ public class Command {
                     tasks.remove(target - 1);
                 }
 
+                storage.save(tasks);
                 break;
 
             case "todo", "deadline", "event":
