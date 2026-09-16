@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.List;
 
 import Task.Deadline;
@@ -7,6 +8,7 @@ import Task.ToDo;
 public class Command {
 
     private final List<ToDo> tasks;
+    private final Storage storage = new Storage();
 
     // Constants
     private static final String GOODBYE = "Bye! See you soon";
@@ -78,6 +80,7 @@ public class Command {
                     tasks.get(target - 1).setDone(false);
                 }
 
+                storage.save(tasks);
                 tempToDo = tasks.get(target - 1);
                 System.out.printf("[%s][%s] %s\n", tempToDo.getTaskIcon(),
                         tempToDo.getStatusIcon(), tempToDo.getDescription());
@@ -126,6 +129,7 @@ public class Command {
                 }
                 tempToDo = tasks.getLast();
                 tempToDo.setDone(false);
+                storage.save(tasks);
                 System.out.println("Task added: ");
                 tempToDo.printResponse();
                 System.out.printf("You have %d tasks added to list\n", tasks.size());
@@ -136,6 +140,8 @@ public class Command {
             }
         } catch (InvalidCommandException e) {
             System.out.println(e.getMessage() + HelpText.COMMAND_LIST);
+        } catch (IOException e) {
+            System.out.println("Could not save tasks. Your changes are only in memory.");
         }
 
         System.out.println(LINE_BREAK);

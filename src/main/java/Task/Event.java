@@ -24,6 +24,11 @@ public class Event extends ToDo{
     }
 
     @Override
+    public String toFileString() {
+        return super.toFileString() + " | " + from + " | " + to;
+    }
+
+    @Override
     public void printResponse() {
         System.out.printf("  [%s][%s]%s (from: %s to: %s)\n", this.getTaskIcon(), this.getStatusIcon(),
                 this.description, this.from, this.to);
