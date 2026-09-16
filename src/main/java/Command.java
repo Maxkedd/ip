@@ -25,7 +25,7 @@ public class Command {
 
     private String[] separateInput(String input) {
         String cleanedInput = input.strip();
-        return cleanedInput.split("\\s+");
+        return cleanedInput.split("\\s+", 2);
     }
 
 
