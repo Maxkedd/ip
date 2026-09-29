@@ -52,6 +52,19 @@ public class Ui {
                 tasksChanged = true;
                 break;
 
+            case "find":
+                var matches = tasks.find(parser.parseKeyword(userInput));
+                if (matches.isEmpty()) {
+                    System.out.println("No matching tasks found.");
+                    break;
+                }
+                System.out.println("Here are the matching tasks in your list:");
+                for (int i = 0; i < matches.size(); i++) {
+                    System.out.printf("%d. ", i + 1);
+                    matches.get(i).printResponse();
+                }
+                break;
+
             case "todo", "deadline", "event":
                 tasks.add(parser.parseTask(userInput));
                 tasksChanged = true;

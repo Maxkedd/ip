@@ -9,6 +9,7 @@ public final class HelpText {
             deadline 'command' /by 'due date' (add deadline task with deadline)
             event 'command' /from 'start date' /to 'end date' (add event task with from and to date)
             list (list all tasks added)
+            find 'keyword' (find tasks whose descriptions contain the keyword; case-sensitive)
             mark 'N' (mark task N as done)
             unmark 'N' (mark task N as not done)
             delete 'N' (delete task N from list)

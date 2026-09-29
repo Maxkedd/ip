@@ -22,11 +22,20 @@ public class Parser {
         String originalCommand = separateInput(input)[0];
         String command = originalCommand.toLowerCase(Locale.ROOT);
         switch (command) {
-        case "bye", "help", "list", "mark", "unmark", "delete", "todo", "deadline", "event":
+        case "bye", "help", "list", "find", "mark", "unmark", "delete", "todo", "deadline", "event":
             return command;
         default:
             throw new InvalidCommandException(originalCommand + " is not a valid command! -_-");
         }
+    }
+
+    /** Reads the search text, preserving spaces within a phrase. */
+    public String parseKeyword(String input) {
+        String[] separatedInput = separateInput(input);
+        if (separatedInput.length < 2 || separatedInput[1].isBlank()) {
+            throw new InvalidCommandException("Please provide a keyword! Use: find keyword");
+        }
+        return separatedInput[1].strip();
     }
 
     /** Reads a displayed task number; the caller checks whether that task exists. */

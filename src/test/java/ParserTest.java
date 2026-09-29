@@ -55,7 +55,7 @@ public class ParserTest {
         Locale original = Locale.getDefault();
         try {
             Locale.setDefault(Locale.forLanguageTag("tr-TR"));
-            for (String command : List.of("bye", "help", "list", "mark", "unmark",
+            for (String command : List.of("bye", "help", "list", "find", "mark", "unmark",
                     "delete", "todo", "deadline", "event")) {
                 if (!parser.parseCommand(command.toUpperCase(Locale.ROOT)).equals(command)) {
                     throw new AssertionError("Command depends on locale: " + command);
