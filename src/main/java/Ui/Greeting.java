@@ -1,3 +1,5 @@
+package Ui;
+
 /** Displays the welcome banner and available commands. */
 public class Greeting {
     private static final String LINE_BREAK = "─".repeat(60);

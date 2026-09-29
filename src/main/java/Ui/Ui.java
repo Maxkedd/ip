@@ -1,9 +1,11 @@
+package Ui;
+
 import java.io.IOException;
 
 import Exceptions.InvalidCommandException;
-import Task.ToDo;
+import Task.TasksList;
 
-/** Handles user commands and records successful task changes for replay. */
+/** Handles user commands and saves the current task list after successful changes. */
 public class Ui {
 
     private final TasksList tasks;
@@ -18,13 +20,8 @@ public class Ui {
         this.tasks = tasks;
     }
 
-    /** Processes new user input and records successful task changes. */
+    /** Processes input and saves a snapshot after a successful task change. */
     public boolean processCommand(String userInput) {
-        return processCommand(userInput, true);
-    }
-
-    /** Processes a command, recording it in the command history to print upon restarting. */
-    public boolean processCommand(String userInput, boolean recordHistory) {
         boolean tasksChanged = false;
         try {
             System.out.println(LINE_BREAK);
@@ -65,9 +62,8 @@ public class Ui {
 
             }
 
-            // invalid commands and processing saved commands must not become part of the saved history.
-            if (recordHistory && tasksChanged) {
-                storage.appendCommand(userInput);
+            if (tasksChanged) {
+                storage.saveTasks(tasks);
             }
 
         } catch (InvalidCommandException e) {

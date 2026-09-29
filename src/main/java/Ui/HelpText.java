@@ -1,3 +1,5 @@
+package Ui;
+
 /** Supplies the shared command guide shown at startup and after input errors. */
 public final class HelpText {
     public static final String COMMAND_LIST = """

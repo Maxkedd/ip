@@ -1,7 +1,8 @@
+package Task;
+
 import java.util.ArrayList;
 
 import Exceptions.InvalidCommandException;
-import Task.ToDo;
 
 /** Owns the tasks and provides operations for managing them. */
 public class TasksList{
