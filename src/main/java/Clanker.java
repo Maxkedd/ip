@@ -11,6 +11,7 @@ public class Clanker {
         Ui command = new Ui(tasks);
         Storage storage = new Storage();
 
+        // Loading Commands
         try {
             // Order matters: task numbers in mark/delete refer to earlier commands.
             for (String savedCommand : storage.loadCommands()) {
@@ -25,9 +26,11 @@ public class Clanker {
         }
 
         try (Scanner in = new Scanner(System.in)) {
+            // Start Up
             greeting.greetUser();
             command.processCommand("list");
 
+            // Process Commands
             while (in.hasNextLine()) {
                 String userInput = in.nextLine();
 

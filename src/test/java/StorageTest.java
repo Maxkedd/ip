@@ -9,7 +9,6 @@ import java.util.List;
 
 import Task.Deadline;
 import Task.Event;
-import Task.ToDo;
 
 /** Runs dependency-free persistence checks in an isolated working directory. */
 public class StorageTest {
@@ -21,8 +20,8 @@ public class StorageTest {
         if (!storage.loadCommands().isEmpty()) {
             throw new AssertionError("Run this check in an empty working directory");
         }
-        ArrayList<ToDo> tasks = new ArrayList<>();
-        Command command = new Command(tasks);
+        TasksList tasks = new TasksList();
+        Ui command = new Ui(tasks);
         command.processCommand("list");
         if (Files.exists(SAVE_FILE)) {
             throw new AssertionError("Listing must not create a save file");
@@ -49,8 +48,8 @@ public class StorageTest {
         command.processCommand("bye");
         expectLines(history.toArray(String[]::new));
 
-        ArrayList<ToDo> restored = new ArrayList<>();
-        Command replay = new Command(restored);
+        TasksList restored = new TasksList();
+        Ui replay = new Ui(restored);
         for (String savedCommand : storage.loadCommands()) {
             replay.processCommand(savedCommand, false);
         }
