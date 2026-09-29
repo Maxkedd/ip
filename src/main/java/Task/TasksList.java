@@ -32,6 +32,17 @@ public class TasksList{
         return tasks.getLast();
     }
 
+    /** Returns description matches in list order using a case-sensitive substring search. */
+    public ArrayList<ToDo> find(String keyword) {
+        ArrayList<ToDo> matches = new ArrayList<>();
+        for (ToDo task : tasks) {
+            if (task.getDescription().contains(keyword)) {
+                matches.add(task);
+            }
+        }
+        return matches;
+    }
+
     /** Processes the mark, unmark or delete command */
     public void targetingCommand(String command, int target) {
 
