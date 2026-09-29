@@ -6,28 +6,35 @@ import Exceptions.InvalidCommandException;
 
 /** Owns the tasks and provides operations for managing them. */
 public class TasksList{
+    /** Tasks in display order; internal indexes begin at zero. */
     private final ArrayList<ToDo> tasks = new ArrayList<>();
 
+    /** Appends a task to the end of the list. */
     public void add(ToDo task) {
         tasks.add(task);
     }
 
+    /** Returns the task at a zero-based index. */
     public ToDo get(int index) {
         return tasks.get(index);
     }
 
+    /** Removes the task at a zero-based index, shifting later tasks forward. */
     public void remove(int index) {
         tasks.remove(index);
     }
 
+    /** Returns the number of tasks currently in the list. */
     public int size() {
         return tasks.size();
     }
 
+    /** Returns whether the list contains no tasks. */
     public boolean isEmpty() {
         return tasks.isEmpty();
     }
 
+    /** Returns the most recently appended task; the list must not be empty. */
     public ToDo getLast() {
         return tasks.getLast();
     }
@@ -72,6 +79,7 @@ public class TasksList{
     }
 
     // List out current commands
+    /** Prints every task in order with a one-based task number. */
     public void List() {
         System.out.println("Here is your list: ");
         for (int i = 0; i < tasks.size(); i++) {

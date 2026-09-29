@@ -4,6 +4,7 @@ package Task;
 public class ToDo extends Task {
     private boolean isDone;
 
+    /** Creates an unfinished task with the supplied description. */
     public ToDo(String description) {
         super(description);
         this.isDone = false;
@@ -14,10 +15,12 @@ public class ToDo extends Task {
         return isDone ? "X" : " ";
     }
 
+    /** Returns the type marker used for displaying and saving a to-do task. */
     public String getTaskIcon() {
         return "T";
     }
 
+    /** Sets whether the task has been completed. */
     public void setDone(boolean isDone) {
         this.isDone = isDone;
     }
