@@ -70,8 +70,7 @@ public class TasksList{
             System.out.println("OK! deleted task: " + target);
         }
 
-        System.out.printf("[%s][%s] %s\n", selectedTask.getTaskIcon(),
-                selectedTask.getStatusIcon(), selectedTask.getDescription());
+        selectedTask.printResponse();
 
         if (command.equals("delete")) {
             tasks.remove(target - 1);
