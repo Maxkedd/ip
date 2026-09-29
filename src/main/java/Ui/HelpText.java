@@ -2,6 +2,7 @@ package Ui;
 
 /** Supplies the shared command guide shown at startup and after input errors. */
 public final class HelpText {
+    /** Command syntax displayed at startup, for help, and after input errors. */
     public static final String COMMAND_LIST = """
             \n
             How to use CLANKER:

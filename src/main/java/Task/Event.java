@@ -5,20 +5,24 @@ public class Event extends ToDo {
     private final String from;
     private final String to;
 
+    /** Creates an unfinished event with its start and end stored as text. */
     public Event(String description, String from, String to) {
         super(description);
         this.from = from;
         this.to = to;
     }
 
+    /** Returns the event start text. */
     public String getFrom() {
         return this.from;
     }
 
+    /** Returns the event end text. */
     public String getTo() {
         return this.to;
     }
 
+    /** Returns the type marker used for displaying and saving an event. */
     @Override
     public String getTaskIcon() {
         return "E";
