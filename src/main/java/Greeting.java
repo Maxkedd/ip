@@ -1,5 +1,4 @@
-import java.io.IOException;
-
+/** Displays the welcome banner and available commands. */
 public class Greeting {
     private static final String LINE_BREAK = "─".repeat(60);
     private static final String BANNER = """
@@ -66,19 +65,12 @@ public class Greeting {
         What shall I help you with today (^;?
         """;
 
-    Storage storage = new Storage();
-
-    // Greet User
+    /** Greets the user before the restored task list is displayed. */
     public void greetUser() {
         System.out.println(LINE_BREAK);
         System.out.println(BANNER);
         System.out.println(GREETING);
         System.out.println(HelpText.COMMAND_LIST);
-        try {
-            storage.printFileContents();
-        } catch (IOException e) {
-            System.out.println("No file found.");
-        }
         System.out.println(LINE_BREAK);
     }
 }

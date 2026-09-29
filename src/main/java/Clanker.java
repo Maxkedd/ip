@@ -1,18 +1,32 @@
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.Scanner;
 
-import Task.ToDo;
-
+/** Restores saved tasks and runs the interactive command loop. */
 public class Clanker {
 
+    /** Replays command history before accepting new user input. */
     public static void main(String[] args) {
-        // Init
-        ArrayList<ToDo> tasks = new ArrayList<>();
+        TasksList tasks = new TasksList();
         Greeting greeting = new Greeting();
-        Command command = new Command(tasks);
+        Ui command = new Ui(tasks);
+        Storage storage = new Storage();
+
+        try {
+            // Order matters: task numbers in mark/delete refer to earlier commands.
+            for (String savedCommand : storage.loadCommands()) {
+                if (!savedCommand.isBlank()) {
+                    command.processCommand(savedCommand, false);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Could not read saved commands: " + e.getMessage());
+            // Stop rather than append new commands to a history we could not restore.
+            return;
+        }
 
         try (Scanner in = new Scanner(System.in)) {
             greeting.greetUser();
+            command.processCommand("list");
 
             while (in.hasNextLine()) {
                 String userInput = in.nextLine();

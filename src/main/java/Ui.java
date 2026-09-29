@@ -1,41 +1,41 @@
-import java.util.ArrayList;
 import java.io.IOException;
+
 import Exceptions.InvalidCommandException;
 import Task.Deadline;
 import Task.Event;
 import Task.ToDo;
 
-public class Command {
+/** Handles user commands and records successful task changes for replay. */
+public class Ui {
 
-    private final ArrayList<ToDo> tasks;
+    private final TasksList tasks;
     private final Storage storage = new Storage();
 
-    // Constants
     private static final String GOODBYE = "Bye! See you soon";
     private static final String LINE_BREAK = "─".repeat(60);
 
-    // Reusable temp variables
-    ToDo tempToDo;
-    String task;
-    String start;
-    String due;
-    String end;
-    String taskToAdd;
-
-    public Command(ArrayList<ToDo> tasks) {
+    /** Uses the same task list that startup restores and later commands update. */
+    public Ui(TasksList tasks) {
         this.tasks = tasks;
     }
 
+    /** Splits once so spaces within a task description are preserved. */
     private String[] separateInput(String input) {
         String cleanedInput = input.strip();
         return cleanedInput.split("\\s+", 2);
     }
 
-
+    /** Processes new user input and records successful task changes. */
     public boolean processCommand(String userInput) {
+        return processCommand(userInput, true);
+    }
+
+    /** Processes a command, recording it in the command history to print upon restarting. */
+    public boolean processCommand(String userInput, boolean recordHistory) {
+        boolean tasksChanged = false;
         try {
             String[] separatedInput = separateInput(userInput);
-            String command = separatedInput[0].toLowerCase().trim();
+            String command = separatedInput[0].toLowerCase();
             String originalCommand = separatedInput[0];
             System.out.println(LINE_BREAK);
 
@@ -56,9 +56,8 @@ public class Command {
 
                 System.out.println("Here is your list: ");
                 for (int i = 0; i < tasks.size(); i++) {
-                    tempToDo = tasks.get(i);
                     System.out.printf("%d. ", i + 1);
-                    tempToDo.printResponse();
+                    tasks.get(i).printResponse();
                 }
                 break;
 
@@ -78,79 +77,86 @@ public class Command {
                     break;
                 }
 
+                // The displayed task numbers start at 1; list indexes start at 0.
+                ToDo selectedTask = tasks.get(target - 1);
                 if (command.equals("mark")) {
                     System.out.println("OK! Marked as done: ");
-                    tasks.get(target - 1).setDone(true);
-                } else if(command.equals("unmark")) {
+                    selectedTask.setDone(true);
+                } else if (command.equals("unmark")) {
                     System.out.println("OK! Marked as not done: " + target);
-                    tasks.get(target - 1).setDone(false);
+                    selectedTask.setDone(false);
                 } else {
                     System.out.println("OK! deleted task: " + target);
                 }
 
-                tempToDo = tasks.get(target - 1);
-                System.out.printf("[%s][%s] %s\n", tempToDo.getTaskIcon(),
-                        tempToDo.getStatusIcon(), tempToDo.getDescription());
+                System.out.printf("[%s][%s] %s\n", selectedTask.getTaskIcon(),
+                        selectedTask.getStatusIcon(), selectedTask.getDescription());
 
-                if(command.equals("delete")) {
+                if (command.equals("delete")) {
                     tasks.remove(target - 1);
                 }
 
-                storage.save(tasks);
+                tasksChanged = true;
                 break;
 
             case "todo", "deadline", "event":
                 if (separatedInput.length < 2 || separatedInput[1].trim().isEmpty()) {
                     throw new InvalidCommandException("Error! Please use the right format!");
                 }
-                taskToAdd = separatedInput[1].trim();
+                String taskToAdd = separatedInput[1].trim();
                 switch (command) {
                 case "todo":
                     tasks.add(new ToDo(taskToAdd));
                     break;
 
-                case "deadline":
+                case "deadline": {
                     int idxBy = taskToAdd.indexOf("/");
 
                     if (idxBy == -1) {
                         throw new InvalidCommandException("Error! Try this format: deadline task /by date");
                     }
-                    task = taskToAdd.substring(0, idxBy).trim();
-                    due = taskToAdd.substring(idxBy + 1).trim();
+                    String description = taskToAdd.substring(0, idxBy).trim();
+                    String due = taskToAdd.substring(idxBy + 1).trim();
 
-                    if(task.isEmpty() || due.isEmpty()) {
+                    if (description.isEmpty() || due.isEmpty()) {
                         throw new InvalidCommandException("Error! Please provide valid task and due date!");
                     }
-                    tasks.add(new Deadline(task, due));
+                    tasks.add(new Deadline(description, due));
                     break;
+                }
 
-                case "event":
+                case "event": {
                     String[] segments = taskToAdd.split("/", 3);
 
                     if (segments.length < 3) {
                         throw new InvalidCommandException("Error! Try this format: event task /from date /to date");
                     }
-                    task = segments[0].trim();
-                    start = segments[1].trim();
-                    end = segments[2].trim();
+                    String description = segments[0].trim();
+                    String start = segments[1].trim();
+                    String end = segments[2].trim();
 
-                    if(task.isEmpty() || start.isEmpty() || end.isEmpty()) {
+                    if (description.isEmpty() || start.isEmpty() || end.isEmpty()) {
                         throw new InvalidCommandException("Error! Please provide valid task and start and end dates!");
                     }
-                    tasks.add(new Event(task, start, end));
+                    tasks.add(new Event(description, start, end));
                     break;
                 }
-                tempToDo = tasks.getLast();
-                tempToDo.setDone(false);
-                storage.save(tasks);
+                }
+                tasksChanged = true;
                 System.out.println("Task added: ");
-                tempToDo.printResponse();
+                tasks.getLast().printResponse();
                 System.out.printf("You have %d tasks added to list\n", tasks.size());
                 break;
 
             default:
                 throw new InvalidCommandException(originalCommand + " is not a valid command! -_-");
             }
+
+            // invalid commands and processing saved commands must not become part of the saved history.
+            if (recordHistory && tasksChanged) {
+                storage.appendCommand(userInput);
+            }
+
         } catch (InvalidCommandException e) {
             System.out.println(e.getMessage() + HelpText.COMMAND_LIST);
         } catch (IOException e) {

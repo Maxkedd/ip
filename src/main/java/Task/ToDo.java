@@ -1,30 +1,28 @@
 package Task;
 
+/** A task with a completion status; also supplies shared behaviour for dated tasks. */
 public class ToDo extends Task {
-    protected boolean isDone;
+    private boolean isDone;
 
     public ToDo(String description) {
         super(description);
         this.isDone = false;
     }
 
+    /** Returns the completion marker used when displaying a task. */
     public String getStatusIcon() {
-        return (isDone ? "X" : " ");
+        return isDone ? "X" : " ";
     }
 
     public String getTaskIcon() {
-        return ("T");
+        return "T";
     }
 
-    public void setDone(Boolean isDone) {
+    public void setDone(boolean isDone) {
         this.isDone = isDone;
     }
 
-    /** Returns the task type, completion flag, and description for storage. */
-    public String toFileString() {
-        return getTaskIcon() + " | " + (isDone ? "1" : "0") + " | " + description;
-    }
-
+    /** Prints the task type, completion marker, and description. */
     public void printResponse() {
         System.out.printf("  [%s][%s]%s\n", this.getTaskIcon(), this.getStatusIcon(), this.description);
     }

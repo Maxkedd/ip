@@ -1,14 +1,11 @@
 package Task;
 
+/** A task that must be completed by a specified date or time. */
 public class Deadline extends ToDo {
-    String by;
+    private final String by;
 
     public Deadline(String description, String by) {
         super(description);
-        this.by = by;
-    }
-
-    public void setBy(String by) {
         this.by = by;
     }
 
@@ -18,14 +15,10 @@ public class Deadline extends ToDo {
 
     @Override
     public String getTaskIcon() {
-        return ("D");
+        return "D";
     }
 
-    @Override
-    public String toFileString() {
-        return super.toFileString() + " | " + by;
-    }
-
+    /** Prints the task details followed by its deadline. */
     @Override
     public void printResponse() {
         System.out.printf("  [%s][%s]%s (by: %s)\n", this.getTaskIcon(), this.getStatusIcon(),

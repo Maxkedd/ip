@@ -1,31 +1,32 @@
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 
-import Task.ToDo;
-
+/** Stores successful commands so they can be replayed at startup. */
 public class Storage {
-    private static final Path FILE_PATH = Path.of("data", "Clanker.txt");
+    /** Command history location, relative to the program's working directory. */
+    private static final Path FILE_PATH = Path.of("data", "commands.txt");
 
-    public void printFileContents() throws IOException {
-        if (!Files.exists(FILE_PATH)) {
-            return;
-        }
+    /** Appends one command, creating the directory and file if needed. */
+    public void appendCommand(String command) throws IOException {
+        Files.createDirectories(FILE_PATH.getParent());
 
-        for (String line : Files.readAllLines(FILE_PATH)) {
-            System.out.println(line);
-        }
+        Files.writeString(
+                FILE_PATH,
+                command + System.lineSeparator(),
+                StandardOpenOption.CREATE,
+                StandardOpenOption.APPEND
+        );
     }
 
-    public void save(List<ToDo> tasks) throws IOException {
-        Files.createDirectories(FILE_PATH.getParent());
-        List<String> lines = new ArrayList<>();
-        for (ToDo task : tasks) {
-            lines.add(task.toFileString());
+    /** Reads the command history in order, or returns an empty list on first use. */
+    public List<String> loadCommands() throws IOException {
+        if (!Files.exists(FILE_PATH)) {
+            return List.of();
         }
-        Files.write(FILE_PATH, lines);
+
+        return Files.readAllLines(FILE_PATH);
     }
 }

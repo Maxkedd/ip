@@ -1,8 +1,9 @@
 package Task;
 
-public class Event extends ToDo{
-    String from;
-    String to;
+/** A task that takes place between a start and an end date or time. */
+public class Event extends ToDo {
+    private final String from;
+    private final String to;
 
     public Event(String description, String from, String to) {
         super(description);
@@ -10,24 +11,20 @@ public class Event extends ToDo{
         this.to = to;
     }
 
-    public void setFrom(String from) {
-        this.from = from;
-    }
-
     public String getFrom() {
         return this.from;
     }
 
+    public String getTo() {
+        return this.to;
+    }
+
     @Override
     public String getTaskIcon() {
-        return ("E");
+        return "E";
     }
 
-    @Override
-    public String toFileString() {
-        return super.toFileString() + " | " + from + " | " + to;
-    }
-
+    /** Prints the task details followed by its start and end times. */
     @Override
     public void printResponse() {
         System.out.printf("  [%s][%s]%s (from: %s to: %s)\n", this.getTaskIcon(), this.getStatusIcon(),

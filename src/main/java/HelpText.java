@@ -1,3 +1,4 @@
+/** Supplies the shared command guide shown at startup and after input errors. */
 public final class HelpText {
     public static final String COMMAND_LIST = """
             \n
@@ -10,5 +11,6 @@ public final class HelpText {
             unmark 'N' (mark task N as not done)
             delete 'N' (delete task N from list)
             """;
+    /** Prevents construction because this class only holds shared text. */
     private HelpText() {}
 }
